@@ -10,12 +10,19 @@ export class PlaceInfoController {
 
   async get(
     _req: HTTPRequest<PlaceInfoRequest>
-  ): Promise<HTTPResponse<PlaceInfo>> {
+  ): Promise<HTTPResponse<PlaceInfo | string>> {
     try {
       const data = _req.payload;
       const getPlaceInfo = new GetPlaceInfo(this.repository);
 
       const placeInfo = await getPlaceInfo.execute(data);
+
+      if (!placeInfo) {
+        return {
+          status: 404,
+          data: `Not found city for paramater: ${data.city}`,
+        };
+      }
 
       return { status: 200, data: placeInfo };
     } catch (e: unknown) {

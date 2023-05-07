@@ -15,7 +15,7 @@ export class ExpressAdapter implements IAdapter {
     const closure = async (expressReq: Request, expressRes: Response) => {
       const results = await controllerMethod({
         method: method,
-        payload: expressReq.body,
+        payload: method === "GET" ? expressReq.query : expressReq.body,
       });
 
       return expressRes.status(results.status).json(results.data);
