@@ -7,22 +7,26 @@ import geoCodeBaseUrl from "../../infra/services/geocode";
 export class GetPlaceInfo implements IGetPlaceInfo {
   constructor(private readonly repository: IPlaceInfoRepository) {}
 
-  async execute(data: PlaceInfoRequest): Promise<PlaceInfo> {
-    const country = data.country ? `&country=${data.country}` : undefined;
-    const response = await geoCodeBaseUrl.get(
-      `search?city=${data.city}${!!country}`
-    );
-    const placeInformations = response.data?.display_name?.split(",");
-    const placeInfo: PlaceInfo = {
-      latitude: response.data.lat,
-      longitute: response.data.lon,
-      city: placeInformations[0],
-      description: placeInformations[1],
-      state: placeInformations[4],
-      region: placeInformations[5],
-      country: placeInformations[6],
-    };
+  async execute(data: PlaceInfoRequest): Promise<PlaceInfo | null> {
+    const url = data.country
+      ? `search?city=${data.city}&country=${data.country}`
+      : `search?city=${data.city}`;
+    const response = await geoCodeBaseUrl.get(url);
+    const placeInformations = response.data[0]?.display_name?.split(",");
 
-    return await this.repository.getLatLongByCityAndCountry(placeInfo);
+    if (placeInformations) {
+      const placeInfo: PlaceInfo = {
+        latitude: response.data[0]?.lat,
+        longitute: response.data[0]?.lon,
+        city: placeInformations[0],
+        description: placeInformations[1],
+        state: placeInformations[4],
+        region: placeInformations[5],
+        country: placeInformations[6],
+      };
+      return await this.repository.getLatLongByCityAndCountry(placeInfo);
+    }
+
+    return null;
   }
 }
