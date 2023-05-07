@@ -20,8 +20,6 @@ for (const router of routers) {
   router.register();
 }
 
-console.log(process.env.PORT);
-
 app.listen(process.env.PORT, () => {
   console.log(`Place info is listening (${process.env.PORT ?? 3001})`);
 });
