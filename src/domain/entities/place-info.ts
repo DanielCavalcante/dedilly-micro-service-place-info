@@ -1,10 +1,17 @@
-export type DailyInfo = {
+export type Units = {
+  time: string;
+  temperature2M: "°C";
+  relativehumidity2M: "%";
+  windspeed10M: "km/h";
+};
+
+export type CurrentWeather = {
+  temperature: number;
+  windSpeed: number;
+  windDirection: number;
+  weatherCode: number;
+  isDay?: number;
   time: Date;
-  temperature2mMinVHR4: number;
-  temperature2mMeanVHR4: number;
-  temperature2mMaxVHR4: number;
-  windspeed10mMeanVHR4: number;
-  windspeed10mMaxVHR4: number;
 };
 
 export type PlaceInfo = {
@@ -17,5 +24,7 @@ export type PlaceInfo = {
   longitute?: string;
   timestamp?: string;
   timezone?: string;
-  dailies?: DailyInfo[];
+  elevation?: number;
+  currentWeather?: CurrentWeather;
+  units?: Units;
 };
